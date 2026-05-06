@@ -1,0 +1,6 @@
+hostname R1
+device router
+interface fa0/0
+ip address 192.168.1.1
+vlan 10
+router ospf

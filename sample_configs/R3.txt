@@ -1,0 +1,6 @@
+hostname R3
+device server
+interface fa0/0
+ip address 192.168.1.1
+vlan 20
+router rip

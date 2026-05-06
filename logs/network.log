@@ -1,0 +1,8 @@
+[INFO] Router R1 interface fa0/0 up
+[INFO] Router R2 interface fa0/1 up
+[WARNING] High latency detected between R1 and R3
+[INFO] VLAN 10 configured successfully
+[CRITICAL] Routing loop suspected near R2
+[WARNING] Packet loss exceeded threshold
+[INFO] Server R3 responding normally
+[CRITICAL] Unauthorized access attempt blocked
