@@ -1,0 +1,214 @@
+body {
+    background-color: #0b0f19;
+    color: #e5e7eb;
+}
+
+.main-header {
+    background: linear-gradient(
+        90deg,
+        #111827,
+        #0f172a
+    );
+
+    padding: 25px;
+
+    border-radius: 18px;
+
+    border: 1px solid #00f5ff;
+
+    box-shadow: 0 0 20px rgba(
+        0,
+        245,
+        255,
+        0.25
+    );
+
+    margin-bottom: 25px;
+}
+
+.main-header h1 {
+
+    color: #00f5ff;
+
+    font-size: 48px;
+
+    margin-bottom: 10px;
+}
+
+.main-header p {
+
+    color: #9ca3af;
+
+    font-size: 18px;
+}
+
+.metric-card {
+
+    background-color: #111827;
+
+    padding: 25px;
+
+    border-radius: 18px;
+
+    border: 1px solid #00f5ff;
+
+    text-align: center;
+
+    box-shadow: 0 0 15px rgba(
+        0,
+        245,
+        255,
+        0.15
+    );
+
+    margin-bottom: 15px;
+}
+
+.metric-card h3 {
+
+    color: #9ca3af;
+
+    margin-bottom: 15px;
+}
+
+.metric-card h2 {
+
+    color: #00ff9f;
+
+    font-size: 34px;
+}
+
+.panel {
+
+    background-color: #111827;
+
+    padding: 25px;
+
+    border-radius: 18px;
+
+    border: 1px solid #1f2937;
+
+    box-shadow: 0 0 12px rgba(
+        0,
+        245,
+        255,
+        0.08
+    );
+
+    margin-top: 20px;
+}
+
+.panel-title {
+
+    color: #00f5ff;
+
+    font-size: 28px;
+
+    font-weight: bold;
+
+    margin-bottom: 20px;
+}
+
+.telemetry-item {
+
+    background-color: #0f172a;
+
+    padding: 18px;
+
+    border-radius: 12px;
+
+    margin-bottom: 18px;
+}
+
+.telemetry-item h4 {
+
+    color: #9ca3af;
+}
+
+.telemetry-item p {
+
+    color: #00ff9f;
+
+    font-size: 28px;
+
+    font-weight: bold;
+}
+
+.log-info,
+.log-warning,
+.log-critical,
+.log-alert {
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    margin-bottom: 12px;
+
+    font-weight: bold;
+}
+
+.log-info {
+
+    background-color: rgba(
+        0,
+        245,
+        255,
+        0.1
+    );
+
+    color: #00f5ff;
+}
+
+.log-warning {
+
+    background-color: rgba(
+        255,
+        183,
+        3,
+        0.1
+    );
+
+    color: #ffb703;
+}
+
+.log-critical {
+
+    background-color: rgba(
+        255,
+        77,
+        109,
+        0.1
+    );
+
+    color: #ff4d6d;
+}
+
+.log-alert {
+
+    background-color: rgba(
+        255,
+        0,
+        0,
+        0.15
+    );
+
+    color: #ff4d6d;
+}
+
+.stButton > button {
+
+    background-color: #ff4d6d;
+
+    color: white;
+
+    border-radius: 12px;
+
+    border: none;
+
+    width: 100%;
+
+    font-weight: bold;
+
+    height: 50px;
+}

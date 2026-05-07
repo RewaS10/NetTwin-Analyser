@@ -1,2 +1,6 @@
 networkx
 matplotlib
+streamlit
+pyvis
+plotly
+streamlit-autorefresh
