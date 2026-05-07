@@ -1,260 +1,427 @@
 # NetTwin Analyser
-> Built as an advanced cybersecurity and enterprise network monitoring project for topology analysis, outage simulation, traffic monitoring, and security event analysis.
 
-[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/) [![NetworkX](https://img.shields.io/badge/NetworkX-graph%20analysis-orange.svg)](https://networkx.org/) [![Matplotlib](https://img.shields.io/badge/Matplotlib-visualization-red.svg)](https://matplotlib.org/) [![CLI Tool](https://img.shields.io/badge/CLI-automation-green.svg)](https://docs.python.org/3/library/argparse.html) [![Cybersecurity](https://img.shields.io/badge/Cybersecurity-operations-yellow.svg)](https://owasp.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
+> Enterprise-grade cybersecurity monitoring and network digital twin platform with interactive SOC dashboard, attack simulation, telemetry analytics, and infrastructure visualization.
 
-## Project Description
+[![Python](https://img.shields.io/badge/Python-3.11-blue.svg)](https://www.python.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-dashboard-red.svg)](https://streamlit.io/)
+[![PyVis](https://img.shields.io/badge/PyVis-network%20visualization-blue.svg)](https://pyvis.readthedocs.io/)
+[![Plotly](https://img.shields.io/badge/Plotly-telemetry-purple.svg)](https://plotly.com/)
+[![NetworkX](https://img.shields.io/badge/NetworkX-graph%20analysis-orange.svg)](https://networkx.org/)
+[![Cybersecurity](https://img.shields.io/badge/Cybersecurity-SOC%20Simulation-yellow.svg)](https://owasp.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
 
-NetTwin Analyser is a Python-based enterprise-grade platform that builds a digital twin of infrastructure networks from raw configuration files. It reconstructs topology, synthesizes traffic behavior, simulates outages, and validates security posture through log analysis, ACL policy emulation, attack modeling, and routing deployment review.
+---
 
-This tool is designed for security analysts, network engineers, and operations teams that require a unified environment for topology discovery, threat validation, outage simulation, and routing protocol assessment.
-## Table of Contents
+# Overview
 
-- Features
-- Architecture Overview
-- Project Structure
-- Screenshots
-- Technologies Used
-- Installation
-- Usage
-- Example Output
-- Network Dashboard
-- Security Capabilities
-- Future Improvements
-- Resume Impact
-- Contribution
-- License
+NetTwin Analyser is an enterprise-style cybersecurity monitoring and network simulation platform built using Python, Streamlit, PyVis, Plotly, and NetworkX.
 
-## Key Features
+The project transforms raw network configuration files into a live digital twin capable of:
 
-- **Enterprise topology reconstruction** from multi-device configuration input  
-- **Traffic utilization analysis** with anomaly alerting  
-- **Network outage simulation** via targeted link failure  
-- **Network health metrics dashboard** with graph-based analytics  
-- **Security log analysis** for event extraction and incident detection  
-- **ACL/firewall simulation** for rule verification and policy validation  
-- **Cyber attack simulation** to model threat scenarios and impact  
-- **Routing protocol awareness** for protocol deployment and path validation  
-- **CLI-driven monitoring workflow** for automation and operational testing  
-- **Graph-based visualization** of network state, traffic flows, and failure domains  
+- topology reconstruction
+- outage simulation
+- traffic monitoring
+- routing protocol analysis
+- ACL/firewall validation
+- attack simulation
+- telemetry visualization
+- security event monitoring
 
-## Architecture Overview
+The platform includes a modern cyberpunk-inspired SOC/NOC dashboard that provides interactive topology visualization, telemetry analytics, security event feeds, router monitoring, and infrastructure threat simulation.
+
+Designed for:
+- SOC analysts
+- network engineers
+- cybersecurity students
+- infrastructure automation teams
+- security operations workflows
+
+---
+
+# Dashboard Preview
+
+## Enterprise SOC Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+---
+
+# Screenshots
+
+## Interactive Network Topology
+
+![Topology](screenshots/topology.png)
+
+---
+
+## Security Event Monitoring
+
+![Security Logs](screenshots/security_logs.png)
+
+---
+
+## Router Status Panel
+
+![Router Status](screenshots/router_status.png)
+
+---
+
+## Telemetry & Threat Analytics
+
+![Telemetry](screenshots/telemetry.png)
+
+---
+
+## ACL Violation Simulation
+
+![ACL Violation](screenshots/acl_violation.png)
+
+---
+
+## Backend CLI Analysis Engine
+
+![Terminal Output](screenshots/terminal_output.png)
+
+---
+
+# Key Features
+
+## Network Monitoring
+
+- Interactive enterprise topology visualization
+- Dynamic traffic monitoring
+- Real-time telemetry analytics
+- Infrastructure health scoring
+- Packet loss and latency analysis
+- Router/device operational monitoring
+
+---
+
+## Cybersecurity Simulation
+
+- ACL violation simulation
+- DDoS attack simulation
+- Routing instability analysis
+- VLAN mismatch detection
+- Threat telemetry scoring
+- Security event classification
+- Attack impact simulation
+
+---
+
+## Infrastructure Analysis
+
+- Topology reconstruction from configuration files
+- Routing protocol awareness (OSPF/BGP/RIP)
+- Link failure simulation
+- Traffic anomaly detection
+- Network outage analysis
+- Infrastructure dependency mapping
+
+---
+
+## Dashboard Capabilities
+
+- Streamlit-powered enterprise dashboard
+- PyVis interactive topology engine
+- Plotly telemetry visualization
+- Cyberpunk SOC/NOC UI
+- Real-time alert simulation
+- Security event logging
+- Interactive simulation controls
+
+---
+
+# Architecture Overview
 
 ```text
-Sample Configs
-      ↓
-Config Parser
-      ↓
-Topology Builder
-      ↓
-Traffic Analyzer
-      ↓
+Sample Configurations
+        ↓
+Configuration Parser
+        ↓
+Topology Reconstruction Engine
+        ↓
+Traffic Analysis Engine
+        ↓
 Simulation Engine
-      ↓
-Security Modules
-      ├── ACL Engine
-      ├── Attack Simulator
-      └── Log Analyzer
-      ↓
-Routing Analysis
-      ↓
-Visualization Dashboard
+        ├── Link Failure Simulation
+        ├── Attack Simulation
+        ├── ACL Validation
+        └── Routing Analysis
+        ↓
+Security Monitoring
+        ↓
+Telemetry Dashboard
+        ↓
+Interactive SOC Visualization
 ```
 
-## Project Structure
+---
+
+# Project Structure
 
 ```text
 NetTwin-Analyser/
+│
 ├── analyzer/
+├── api/
+├── dashboard/
+│   ├── app.py
+│   ├── components/
+│   ├── styles/
+│   └── assets/
+│
 ├── logs/
 ├── monitoring/
 ├── parser/
 ├── recommender/
 ├── sample_configs/
+├── screenshots/
 ├── security/
 ├── simulator/
 ├── topology/
 ├── utils/
+│
 ├── main.py
 ├── requirements.txt
 ├── README.md
 └── LICENSE
 ```
-## Demo Workflow
 
-```bash
-python main.py --input sample_configs --analyze --simulate --node1 R1 --node2 R2 --visualize --logs --acl --attack --routing
-## Screenshots
+---
 
-### Architecture Diagram
-![Architecture Diagram](screenshots/architecture.png)
-
-### Monitoring Dashboard
-![Dashboard](screenshots/dashboard.png)
-
-### Failure Simulation
-![Failure Simulation](screenshots/failure_simulation.png)
-
-### Monitoring and Analysis Output
-![Terminal Output](screenshots/terminal1.png)
-
-### Security Simulation Output
-![Security Output](screenshots/terminal2.png)
-
-## Technologies Used
+# Technologies Used
 
 | Technology | Purpose |
-| --- | --- |
-| Python | Core automation and analysis engine |
-| NetworkX | Graph-based topology and path analysis |
-| Matplotlib | Visualization and network plotting |
-| argparse | CLI workflow and operational control |
-| Graph Theory | Topology modeling and failure simulation |
-| CLI Simulation | Automated infrastructure scenario execution |
+|---|---|
+| Python | Core backend and simulation engine |
+| Streamlit | Interactive enterprise dashboard |
+| PyVis | Interactive topology visualization |
+| Plotly | Telemetry analytics and metrics |
+| NetworkX | Graph-based topology modeling |
+| Matplotlib | Backend visualization support |
+| HTML/CSS | Custom cyberpunk UI styling |
+| Graph Theory | Path and outage analysis |
+| CLI Automation | Infrastructure workflow execution |
 
-## Installation Instructions
+---
+
+# Installation
+
+## Clone Repository
 
 ```bash
 git clone https://github.com/RewaS10/NetTwin-Analyser.git
+```
+
+## Navigate Into Project
+
+```bash
 cd NetTwin-Analyser
+```
+
+## Install Dependencies
+
+```bash
 pip install -r requirements.txt
 ```
 
-## Usage Instructions
+---
 
-Run the platform with a full monitoring and simulation workflow:
+# Running The Project
+
+# 1. Launch Enterprise Dashboard
+
+```bash
+streamlit run dashboard/app.py
+```
+
+This launches:
+- SOC dashboard
+- topology visualization
+- telemetry monitoring
+- security event feed
+- attack simulation controls
+
+---
+
+# 2. Run CLI Analysis Engine
 
 ```bash
 python main.py --input sample_configs --analyze --simulate --node1 R1 --node2 R2 --visualize --logs --acl --attack --routing
 ```
 
-### CLI Flags
+This runs:
+- topology analysis
+- outage simulation
+- traffic analysis
+- ACL validation
+- attack simulation
+- routing analysis
+- security log analysis
 
-| Flag | Description |
-| --- | --- |
-| `--input` | Path to the configuration folder containing device files |
-| `--analyze` | Run configuration analysis and detect issues |
-| `--simulate` | Simulate a link failure scenario |
-| `--node1` | First endpoint for outage simulation |
-| `--node2` | Second endpoint for outage simulation |
-| `--visualize` | Render topology and traffic visualization |
-| `--logs` | Analyze network event logs |
-| `--acl` | Execute ACL/firewall policy simulation |
-| `--attack` | Simulate attack scenarios against the topology |
-| `--routing` | Analyze routing protocol deployment and consistency |
+---
 
-## Example Output
+# Dashboard Capabilities
 
-### Topology Analysis
+## Interactive Topology
+
+- Drag-and-drop network graph
+- Dynamic link states
+- Traffic visualization
+- Device status monitoring
+- Interactive node inspection
+
+---
+
+## Telemetry Monitoring
+
+- Network health score
+- Threat analytics
+- Packet loss monitoring
+- Bandwidth utilization
+- Latency tracking
+- Uptime analysis
+
+---
+
+## Security Operations
+
+- Security event logging
+- ACL violation alerts
+- Threat scoring
+- Attack simulation
+- Operational alerts
+- Infrastructure risk analysis
+
+---
+
+# Example CLI Output
+
+## Topology Analysis
 
 ```text
 === TOPOLOGY ===
 Nodes: 16
 Edges: 20
-Topology status: stable
-Traffic summary: 82% capacity utilization
+Topology Status: Stable
+Traffic Utilization: 82%
 ```
 
-### Attack Simulation
+---
+
+## Attack Simulation
 
 ```text
 === ATTACK SIMULATION ===
-Threat vector identified on link R1-R2
-Compromised segment: R2, R3, FW1
-Recommendation: isolate affected path and validate edge ACL rules
+Threat vector detected on R1-R2
+Affected devices: R2, R3, FW1
+Recommended action:
+- isolate affected segment
+- validate ACL policies
+- reroute traffic
 ```
 
-### ACL Simulation
+---
+
+## ACL Simulation
 
 ```text
 === ACL SIMULATION ===
-Policy validation completed
 Denied flows: 7
 Allowed flows: 29
 Conflicting rules: 0
 ```
 
-### Routing Protocol Analysis
+---
+
+## Routing Analysis
 
 ```text
-=== ROUTING PROTOCOLS ===
-OSPF adjacency validation passed
-BGP peer matrix stable
+=== ROUTING PROTOCOL ANALYSIS ===
+OSPF adjacency stable
+BGP peer matrix healthy
 Route convergence: 3.2 seconds
 ```
 
-## Network Dashboard Explanation
+---
 
-The visualization dashboard is designed for rapid operational insight:
+# Future Improvements
 
-- **Node colors** indicate traffic load, device health, and active reachability  
-- **Failed links** show outage impact zones and path degradation  
-- **Traffic labels** annotate bandwidth utilization and flow intensity  
-- **Metrics panel** summarizes health indicators, packet loss, and latency trends  
-- **Health score** reflects combined topology integrity, traffic stability, and security posture  
+- Live websocket telemetry streaming
+- Threat intelligence feed integration
+- Real-time packet capture analysis
+- SIEM integration
+- Authentication and RBAC
+- Multi-tenant SOC monitoring
+- AI-driven anomaly detection
+- Cloud deployment scaling
 
-## Security Capabilities
+---
 
-NetTwin Analyser delivers enterprise-focused security validation through:
+# Resume Impact
 
-- **Attack detection** for simulated threat activity and infrastructure compromise  
-- **Access control simulation** to validate ACL and firewall rule behavior under real network state  
-- **Anomaly monitoring** for traffic deviations and suspicious patterns  
-- **Security event analysis** from log data to identify operational incidents  
-- **Threat simulation** for resilience validation and policy tuning  
+This project demonstrates practical skills in:
 
-## Future Improvements
+- cybersecurity monitoring
+- SOC/NOC dashboard development
+- enterprise networking
+- infrastructure visualization
+- attack simulation
+- routing analysis
+- Python backend engineering
+- topology modeling
+- telemetry analytics
+- infrastructure automation
 
-- Streamlit dashboard for interactive enterprise monitoring  
-- Real-time packet capture and packet-level visibility  
-- SIEM integration for centralized security event correlation  
-- Live monitoring with continuous network state updates  
-- SNMP support for device polling and telemetry intake  
-- AI anomaly detection for advanced threat and traffic behavior modeling  
-- Multi-device simulation for large-scale infrastructure validation  
+---
 
-## ## Skills Demonstrated
-- enterprise networking architecture  
-- cybersecurity simulation and threat modeling  
-- monitoring automation with Python  
-- graph-based infrastructure analysis  
-- infrastructure resilience and outage testing  
-- CLI-driven operational workflows  
+# Deployment
 
-## Contribution
+The dashboard is fully deployable using:
 
-Contributions are welcome from security engineers, network architects, and automation developers. To contribute:
+- Streamlit Cloud
+- Render
+- Docker
+- VPS hosting
 
-1. Fork the repository.  
-2. Create a feature branch: `git checkout -b feature/your-change`.  
-3. Submit a pull request with detailed test steps.
+---
 
-Please follow clean code standards, include documentation for new features, and provide validation cases for any simulation or analysis updates.
+# Contribution
 
-## License
+Contributions are welcome.
+
+To contribute:
+
+```bash
+git checkout -b feature/your-feature
+```
+
+Then:
+- commit changes
+- push branch
+- open pull request
+
+---
+
+# Author
+
+Developed by Rewa
+
+Cybersecurity • Network Monitoring • Infrastructure Simulation
+
+---
+
+# License
 
 MIT License
 
 Copyright (c) 2026 NetTwin Analyser
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+of this software and associated documentation files to deal in the Software
+without restriction.
 
 ---
 
-Built for enterprise network monitoring, cybersecurity simulation, and infrastructure analysis.
+Built for enterprise cybersecurity monitoring, infrastructure simulation, and SOC visualization.
