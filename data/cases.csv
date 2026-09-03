@@ -1,0 +1,379 @@
+case_id,symptom,topology_note,show_outputs,expected_fault,osi_layer,concept_tag,severity,fix_steps
+CASE_001,"PC-1 cannot ping PC-2 or access gateway
+ services in VLAN 20.",SW1 connected to PC-1 on Fa0/1 (intended VLAN 20) and PC-2 on Fa0/2 (VLAN 20). Subnet: 192.168.20.0/24.,"SW1# show vlan brief
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/1, Fa0/3, Fa0/4
+20   Engineering                      active    Fa0/2
+
+PC-1> ping 192.168.20.2
+Pinging 192.168.20.2 with 32 bytes of data:
+Request timed out.
+Request timed out.
+Ping statistics for 192.168.20.2:
+    Packets: Sent = 4, Received = 0, Lost = 4 (100% loss)",Switch port Fa0/1 on SW1 is assigned to default VLAN 1 instead of access VLAN 20.,Layer 2,VLAN,Medium,"SW1# configure terminal
+SW1(config)# interface FastEthernet0/1
+SW1(config-if)# switchport mode access
+SW1(config-if)# switchport access vlan 20
+SW1(config-if)# end
+SW1# write memory"
+CASE_002,CDP native VLAN mismatch warnings logged on SW1 and SW2; un-tagged traffic leaking across VLAN boundaries.,"SW1 connected to SW2 via trunk link on Gig0/1. SW1 native VLAN 10, SW2 native VLAN 20.","%CDP-4-NATIVE_VLAN_MISMATCH: Native VLAN mismatch discovered on GigabitEthernet0/1 (10), with SW2 GigabitEthernet0/1 (20).
+
+SW1# show interfaces gigabitEthernet 0/1 switchport
+Name: Gi0/1
+Administrative Mode: trunk
+Operational Mode: trunk
+Administrative Native VLAN: 10
+Operational Native VLAN: 10
+
+SW2# show interfaces gigabitEthernet 0/1 switchport
+Administrative Native VLAN: 20
+Operational Native VLAN: 20",802.1Q Native VLAN mismatch across trunk link Gig0/1 between SW1 (VLAN 10) and SW2 (VLAN 20).,Layer 2,VLAN,High,"SW2# configure terminal
+SW2(config)# interface GigabitEthernet0/1
+SW2(config-if)# switchport trunk native vlan 10
+SW2(config-if)# end
+SW2# write memory"
+CASE_003,Hosts in VLAN 30 on SW2 cannot communicate with VLAN 30 hosts or gateway on SW1.,SW1 and SW2 trunked via Gig0/1. SW1 configured with restricted allowed VLAN list on trunk.,"SW1# show interfaces trunk
+Port        Mode         Encapsulation  Status        Native vlan
+Gi0/1       on           802.1q         trunking      1
+Port        Vlans allowed on trunk
+Gi0/1       10,20
+
+PC-VLAN30> ping 192.168.30.1
+Request timed out.",Trunk interface Gig0/1 on SW1 omits VLAN 30 from its switchport trunk allowed vlan list.,Layer 2,VLAN,Medium,"SW1# configure terminal
+SW1(config)# interface GigabitEthernet0/1
+SW1(config-if)# switchport trunk allowed vlan add 30
+SW1(config-if)# end
+SW1# write memory"
+CASE_004,Inter-switch link fails to form a trunk; VLAN traffic across switches is isolated.,"SW1 Gig0/1 configured as static trunk, SW2 Gig0/1 misconfigured as static access.","SW1# show interfaces gigabitEthernet 0/1 switchport
+Administrative Mode: trunk
+Operational Mode: trunk
+
+SW2# show interfaces gigabitEthernet 0/1 switchport
+Administrative Mode: static access
+Operational Mode: static access
+Access Mode VLAN: 1 (default)","Switchport mode mismatch on inter-switch link Gig0/1 (SW1 is trunk, SW2 is access).",Layer 2,VLAN,High,"SW2# configure terminal
+SW2(config)# interface GigabitEthernet0/1
+SW2(config-if)# switchport mode trunk
+SW2(config-if)# end
+SW2# write memory"
+CASE_005,Port Fa0/5 stays inactive/inactive for VLAN 40 traffic; frame forwarding fails.,SW1 Fa0/5 assigned to VLAN 40 (Executive). Subnet 10.40.0.0/24.,"SW1# show running-config interface FastEthernet0/5
+interface FastEthernet0/5
+ switchport access vlan 40
+ switchport mode access
+!
+SW1# show vlan brief
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/1, Fa0/2, Fa0/3, Fa0/4
+10   Sales                            active    Fa0/6",Access VLAN 40 is assigned to port Fa0/5 but has not been defined in the SW1 VLAN database.,Layer 2,VLAN,Medium,"SW1# configure terminal
+SW1(config)# vlan 40
+SW1(config-vlan)# name Executive
+SW1(config-vlan)# end
+SW1# write memory"
+CASE_006,PC-1 can ping local LAN hosts but cannot reach external networks or remote subnets.,"PC-1 IP: 192.168.1.50/24, Gateway R1 Gi0/0 IP: 192.168.1.1.","PC-1> ipconfig
+FastEthernet0 Connection:
+   IP Address......................: 192.168.1.50
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: 192.168.1.254
+
+PC-1> ping 192.168.1.1
+Request timed out.
+PC-1> ping 8.8.8.8
+Request timed out.",Incorrect default gateway IP address (192.168.1.254) configured on PC-1 instead of 192.168.1.1.,Layer 3,Gateway,High,"On PC-1 Network Settings:
+Change Default Gateway to 192.168.1.1
+Or via Command Line:
+PC-1> ipconfig /setgateway 192.168.1.1"
+CASE_007,PC-1 (10.0.1.50) cannot communicate with Gateway R1 (10.0.1.1) despite being on the same switch.,R1 Gi0/0 subnet: 10.0.1.0/24 (255.255.255.0). PC-1 incorrectly configured with /28 mask.,"R1# show ip interface GigabitEthernet0/0
+GigabitEthernet0/0 is up, line protocol is up
+  Internet address is 10.0.1.1/24
+
+PC-1> ipconfig
+   IP Address......................: 10.0.1.50
+   Subnet Mask.....................: 255.255.255.240
+   Default Gateway.................: 10.0.1.1
+
+PC-1> ping 10.0.1.1
+Destination host unreachable.",Subnet mask mismatch on PC-1 (255.255.255.240 /28) places default gateway 10.0.1.1 outside its local subnet (10.0.1.48-10.0.1.63).,Layer 3,Gateway,Medium,"On PC-1 Interface Configuration:
+Set Subnet Mask to 255.255.255.0 (/24)"
+CASE_008,All hosts in VLAN 10 lose gateway connectivity and cross-VLAN communication.,Router-on-a-stick topology. Router R1 subinterface Gi0/0.10 acts as default gateway for VLAN 10.,"R1# show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     unassigned      YES unset  up                    up
+GigabitEthernet0/0.10  192.168.10.1    YES manual administratively down down
+GigabitEthernet0/0.20  192.168.20.1    YES manual up                    up
+
+PC-VLAN10> ping 192.168.10.1
+Request timed out.",Router subinterface GigabitEthernet0/0.10 is administratively down.,Layer 3,Gateway,Critical,"R1# configure terminal
+R1(config)# interface GigabitEthernet0/0.10
+R1(config-subif)# no shutdown
+R1(config-subif)# end
+R1# write memory"
+CASE_009,Host PC-1 has static IP but cannot ARP or ping gateway R1.,R1 interface Gi0/0 configured as 172.16.1.1/24. PC-1 assigned 172.16.2.10/24.,"R1# show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0     172.16.1.1      YES manual up                    up
+
+PC-1> ipconfig
+   IP Address......................: 172.16.2.10
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: 172.16.1.1
+
+PC-1> ping 172.16.1.1
+Destination host unreachable.",Host PC-1 IP address (172.16.2.10) is in a completely different IP subnet than gateway R1 (172.16.1.1/24).,Layer 3,Gateway,High,"On PC-1 IP Settings:
+Reconfigure IP Address to 172.16.1.10
+Subnet Mask: 255.255.255.0
+Default Gateway: 172.16.1.1"
+CASE_010,"New client PCs fail to obtain dynamic IP address, defaulting to APIPA (169.254.x.x).",R1 provides DHCP services for LAN subnet 192.168.5.0/24. Scope pool small range.,"R1# show ip dhcp pool LAN_POOL
+Pool LAN_POOL :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (Current/Total)    : 5 / 5
+ Total addresses                : 5
+ Leased addresses               : 5
+ Pending addresses              : 0
+ Excluded addresses             : 0
+
+PC-NEW> ipconfig /renew
+DHCP request failed. APIPA address assigned: 169.254.45.12.",DHCP server pool LAN_POOL address range is exhausted (only 5 addresses allocated).,Layer 7,DHCP,High,"R1# configure terminal
+R1(config)# ip dhcp pool LAN_POOL
+R1(config-dhcp)# network 192.168.5.0 255.255.255.0
+R1(config-dhcp)# end
+R1# write memory"
+CASE_011,Clients in VLAN 10 fail to receive DHCP leases from centralized DHCP Server (10.0.2.100).,R1 interface Gi0/0.10 (192.168.10.1) connects VLAN 10 to core network where DHCP Server 10.0.2.100 resides.,"R1# show running-config interface GigabitEthernet0/0.10
+interface GigabitEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 192.168.10.1 255.255.255.0
+!
+
+PC-VLAN10> ipconfig /renew
+DHCP request timed out.",Missing `ip helper-address 10.0.2.100` on router interface Gi0/0.10 to relay broadcast DHCP DISCOVER requests across subnets.,Layer 3,DHCP,Critical,"R1# configure terminal
+R1(config)# interface GigabitEthernet0/0.10
+R1(config-if)# ip helper-address 10.0.2.100
+R1(config-if)# end
+R1# write memory"
+CASE_012,IP address conflict warnings on PC-1; Gateway R1 unreachable intermittent packet loss.,R1 DHCP server pool 192.168.1.0/24. Gateway IP 192.168.1.1 assigned dynamically to client.,"R1# show running-config | section dhcp
+ip dhcp pool OFFICE
+ network 192.168.1.0 255.255.255.0
+ default-router 192.168.1.1
+!
+R1# show ip dhcp binding
+IP address       Client-ID/Hardware address      Expiration       Type
+192.168.1.1      0060.7011.AA01                  Automatic","DHCP server excluded-address list missing default gateway IP (192.168.1.1), causing DHCP server to issue gateway IP to a host.",Layer 3,DHCP,High,"R1# configure terminal
+R1(config)# ip dhcp excluded-address 192.168.1.1 192.168.1.10
+R1(config)# clear ip dhcp binding 192.168.1.1
+R1(config)# end
+R1# write memory"
+CASE_013,No clients on LAN receive dynamic IP addresses despite valid pool configuration.,"R1 configured with valid DHCP pool `STAFF`, but global service disabled.","R1# show running-config | include dhcp
+no service dhcp
+ip dhcp pool STAFF
+ network 10.10.10.0 255.255.255.0
+ default-router 10.10.10.1
+
+PC-1> ipconfig /renew
+DHCP request failed.",Cisco IOS global DHCP service is disabled (`no service dhcp`).,Layer 7,DHCP,High,"R1# configure terminal
+R1(config)# service dhcp
+R1(config)# end
+R1# write memory"
+CASE_014,PC-1 can ping external IP addresses (8.8.8.8) but cannot resolve hostnames (google.com).,PC-1 static IP configuration. Corporate DNS Server IP is 192.168.10.5. PC-1 configured with 192.168.10.250.,"PC-1> ipconfig
+   IP Address......................: 192.168.10.20
+   Subnet Mask.....................: 255.255.255.0
+   Default Gateway.................: 192.168.10.1
+   DNS Server......................: 192.168.10.250
+
+PC-1> nslookup web.corp.local
+DNS request timed out.
+timeout was 2 seconds.",Incorrect DNS server IP address (192.168.10.250) configured on client PC-1.,Layer 7,DNS,Medium,"On PC-1 Network Settings:
+Update Primary DNS Server IP to 192.168.10.5"
+CASE_015,Client PCs resolve external internet hostnames but fail to resolve internal hostname `app.corp.local`.,DNS Server 10.10.10.5 hosting domain `corp.local`. Internal Web Server at 10.10.10.50.,"PC-1> nslookup app.corp.local 10.10.10.5
+Server: dns.corp.local
+Address: 10.10.10.5
+
+*** dns.corp.local can't find app.corp.local: Non-existent domain
+
+PC-1> ping 10.10.10.50
+Reply from 10.10.10.50: bytes=32 time=2ms TTL=128",Missing DNS A-record mapping `app.corp.local` to IP address 10.10.10.50 on DNS Server.,Layer 7,DNS,Medium,"On DNS Server Management Console:
+Add Resource Record:
+Type: A Record
+Name: app.corp.local
+IP Address: 10.10.10.50"
+CASE_016,Router R1 fails to resolve hostnames from CLI (Translating 'server1.corp'... domain server (255.255.255.255) % Unknown command or computer name).,R1 DNS resolution setup. Name server set to 10.0.0.5.,"R1# ping server1.corp.local
+Translating ""server1.corp.local""...domain server (255.255.255.255)
+% Unknown command or computer name, or unable to find computer address
+
+R1# show running-config | include domain
+no ip domain-lookup
+ip name-server 10.0.0.5",Router CLI domain name lookup is disabled globally (`no ip domain-lookup`).,Layer 7,DNS,Low,"R1# configure terminal
+R1(config)# ip domain-lookup
+R1(config)# end
+R1# write memory"
+CASE_017,DNS queries to DNS Server 10.0.0.5 time out across all LAN client hosts.,DNS Server on 10.0.0.5 connected to Switch SW1. DNS Service disabled on server.,"PC-1> nslookup www.example.local 10.0.0.5
+DNS request timed out.
+    timeout was 2 seconds.
+*** Request to 10.0.0.5 timed out.
+
+PC-1> ping 10.0.0.5
+Reply from 10.0.0.5: bytes=32 time=1ms TTL=128",DNS Server host is reachable via ICMP but its DNS service process is turned off / not listening on UDP port 53.,Layer 7,DNS,High,"On DNS Server Host:
+Navigate to Services -> DNS
+Toggle DNS Service status to 'ON'"
+CASE_018,PC-1 (192.168.10.10) connected to R1 cannot ping PC-3 (172.16.30.50) behind R2.,R1 (Gi0/1: 10.0.0.1/30) connected to R2 (Gi0/1: 10.0.0.2/30). R2 LAN: 172.16.30.0/24.,"R1# show ip route
+Codes: C - connected, S - static, R - RIP, M - mobile, B - BGP
+Gateway of last resort is not set
+
+     10.0.0.0/30 is subnetted, 1 subnets
+C       10.0.0.0 is directly connected, GigabitEthernet0/1
+     192.168.10.0/24 is subnetted, 1 subnets
+C       192.168.10.0 is directly connected, GigabitEthernet0/0
+
+PC-1> ping 172.16.30.50
+Reply from 192.168.10.1: Destination net unreachable.",Missing static route on Router R1 for remote network 172.16.30.0/24 via next-hop 10.0.0.2.,Layer 3,Routing,High,"R1# configure terminal
+R1(config)# ip route 172.16.30.0 255.255.255.0 10.0.0.2
+R1(config)# end
+R1# write memory"
+CASE_019,OSPF neighbor relationship between R1 and R2 fails to establish; dynamic routes not exchanged.,R1 and R2 connected via link 10.0.0.0/30 on interface Gi0/1 running OSPF Process 1 Area 0.,"R1# show ip ospf neighbor
+R1# 
+
+R1# show running-config | section ospf
+router ospf 1
+ router-id 1.1.1.1
+ passive-interface GigabitEthernet0/1
+ network 10.0.0.0 0.0.0.3 area 0
+ network 192.168.10.0 0.0.0.255 area 0","Interface GigabitEthernet0/1 on R1 is configured as passive-interface, suppressing OSPF Hello packets.",Layer 3,Routing,High,"R1# configure terminal
+R1(config)# router ospf 1
+R1(config-router)# no passive-interface GigabitEthernet0/1
+R1(config-router)# end
+R1# write memory"
+CASE_020,R1 interface Gi0/1 (10.0.0.1/30) does not participate in OSPF; R2 never receives OSPF advertisements.,R1 link 10.0.0.0/30 on Gi0/1. Wildcard mask incorrectly configured in OSPF network statement.,"R1# show ip interface brief GigabitEthernet0/1
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/1     10.0.0.1        YES manual up                    up
+
+R1# show running-config | section ospf
+router ospf 1
+ network 10.0.0.4 0.0.0.3 area 0
+
+R1# show ip ospf interface GigabitEthernet0/1
+% OSPF: OSPF not enabled on GigabitEthernet0/1",OSPF network statement subnet/wildcard mask mismatch (10.0.0.4 0.0.0.3 instead of 10.0.0.0 0.0.0.3).,Layer 3,Routing,High,"R1# configure terminal
+R1(config)# router ospf 1
+R1(config-router)# no network 10.0.0.4 0.0.0.3 area 0
+R1(config-router)# network 10.0.0.0 0.0.0.3 area 0
+R1(config-router)# end
+R1# write memory"
+CASE_021,Ping from PC-1 (192.168.10.10) to PC-2 (192.168.20.10) times out; traceroute stops at R2.,"R1 LAN 192.168.10.0/24, R2 LAN 192.168.20.0/24. Inter-router link 10.0.0.0/30. Static routing configured.","R1# show ip route static
+S    192.168.20.0/24 [1/0] via 10.0.0.2
+
+R2# show ip route static
+Gateway of last resort is not set
+
+PC-1> traceroute 192.168.20.10
+  1   192.168.10.1   1 ms   1 ms   1 ms
+  2   10.0.0.2       2 ms   2 ms   2 ms
+  3   * * *",Asymmetric routing failure: Router R2 is missing a return static route to R1 LAN (192.168.10.0/24).,Layer 3,Routing,High,"R2# configure terminal
+R2(config)# ip route 192.168.10.0 255.255.255.0 10.0.0.1
+R2(config)# end
+R2# write memory"
+CASE_022,PC-1 (10.0.1.10) cannot receive ping replies or HTTP traffic from Server (10.0.2.50).,ACL 100 applied outbound on R1 Gi0/1 (facing Server subnet). ACL permits HTTP outbound but denies return/ICMP.,"R1# show access-lists 100
+Extended IP access list 100
+    10 permit tcp host 10.0.1.10 host 10.0.2.50 eq 80
+    20 deny ip any any (14 matches)
+
+PC-1> ping 10.0.2.50
+Request timed out.",Extended ACL 100 lacks rule to permit ICMP/established return traffic from Server 10.0.2.50.,Layer 4,ACL,Medium,"R1# configure terminal
+R1(config)# ip access-list extended 100
+R1(config-ext-nacl)# 15 permit icmp host 10.0.1.10 host 10.0.2.50
+R1(config-ext-nacl)# end
+R1# write memory"
+CASE_023,Hosts in subnet 10.0.1.16/28 are unexpectedly blocked from accessing Server 10.0.2.100.,Target permit group: Subnet 10.0.1.0/28 (10.0.1.0 - 10.0.1.15). ACL wildcard mask miscalculated.,"R1# show access-lists FILTER_LAN
+Extended IP access list FILTER_LAN
+    10 permit ip 10.0.1.0 0.0.0.255 host 10.0.2.100
+    20 deny ip any any
+
+R1# show running-config | include access-list
+ip access-list extended FILTER_LAN
+ permit ip 10.0.1.0 0.0.0.255 host 10.0.2.100","ACL wildcard mask error: `0.0.0.255` was configured instead of `/28` wildcard mask `0.0.0.15`, granting unintended access to entire /24.",Layer 3,ACL,High,"R1# configure terminal
+R1(config)# ip access-list extended FILTER_LAN
+R1(config-ext-nacl)# no 10
+R1(config-ext-nacl)# 10 permit ip 10.0.1.0 0.0.0.15 host 10.0.2.100
+R1(config-ext-nacl)# end
+R1# write memory"
+CASE_024,All LAN hosts connected to Gi0/0 are completely blocked from accessing both local router and external network.,Intended to block external inbound traffic. ACL 101 mistakenly applied inbound on internal LAN interface Gi0/0.,"R1# show ip interface GigabitEthernet0/0
+GigabitEthernet0/0 is up, line protocol is up
+  Inbound  access list is 101
+  Outbound access list is not set
+
+R1# show access-lists 101
+Extended IP access list 101
+    10 deny ip any 192.168.1.0 0.0.255.255
+    20 permit ip any any",Directional ACL placement error: ACL 101 applied `in` on internal interface Gi0/0 instead of `in` on WAN interface Gi0/1.,Layer 3,ACL,High,"R1# configure terminal
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# no ip access-group 101 in
+R1(config)# interface GigabitEthernet0/1
+R1(config-if)# ip access-group 101 in
+R1(config-if)# end
+R1# write memory"
+CASE_025,Web traffic to Web Server 10.0.2.10:80 is blocked despite explicitly intended permit command.,Extended ACL 105 applied inbound on Gi0/0. Line ordering issue.,"R1# show access-lists 105
+Extended IP access list 105
+    10 deny ip any any (42 matches)
+    20 permit tcp any host 10.0.2.10 eq 80
+
+PC-1> ping 10.0.2.10
+Request timed out.",ACL rule sequence order error: broad `deny ip any any` at line 10 shadowed the specific permit rule at line 20.,Layer 4,ACL,High,"R1# configure terminal
+R1(config)# ip access-list extended 105
+R1(config-ext-nacl)# no 10
+R1(config-ext-nacl)# 10 permit tcp any host 10.0.2.10 eq 80
+R1(config-ext-nacl)# 20 deny ip any any
+R1(config-ext-nacl)# end
+R1# write memory"
+CASE_026,LAN hosts (192.168.1.0/24) cannot access internet (8.8.8.8); packets dropped at border router R1.,"Border router R1 performing NAT/PAT. Interface Gi0/1 has `ip nat outside`, but Gi0/0 missing `ip nat inside`.","R1# show ip nat statistics
+Total active translations: 0 (0 static, 0 dynamic; 0 extended)
+Outside interfaces:
+  GigabitEthernet0/1
+Inside interfaces:
+  none configured
+
+PC-1> ping 8.8.8.8
+Request timed out.",Missing `ip nat inside` command on LAN interface GigabitEthernet0/0 of border router R1.,Layer 3,NAT,Critical,"R1# configure terminal
+R1(config)# interface GigabitEthernet0/0
+R1(config-if)# ip nat inside
+R1(config-if)# end
+R1# write memory"
+CASE_027,Hosts in subnet 192.168.10.0/24 fail NAT translation and cannot reach public IP addresses.,R1 NAT overload configuration. NAT rule references ACL 1.,"R1# show running-config | include nat
+ip nat inside source list 1 interface GigabitEthernet0/1 overload
+
+R1# show access-lists 1
+Standard IP access list 1
+    10 permit 192.168.1.0 0.0.0.255
+
+R1# show ip interface brief GigabitEthernet0/0
+GigabitEthernet0/0     192.168.10.1    YES manual up                    up","NAT overload ACL mismatch: ACL 1 permits 192.168.1.0/24, but active LAN hosts are in subnet 192.168.10.0/24.",Layer 3,NAT,High,"R1# configure terminal
+R1(config)# access-list 1 permit 192.168.10.0 0.0.0.255
+R1(config)# end
+R1# write memory"
+CASE_028,"First LAN client successfully accesses Internet, but all subsequent LAN client connections fail.",Dynamic NAT pool `PUBLIC_POOL` with 1 public IP address (203.0.113.10). Missing `overload` keyword.,"R1# show running-config | include ip nat inside source
+ip nat inside source list 1 pool PUBLIC_POOL
+
+R1# show ip nat pool PUBLIC_POOL
+pool PUBLIC_POOL: netmask 255.255.255.252
+    start 203.0.113.10 end 203.0.113.10
+    type generic, total addresses 1, allocated 1 (100%), misses 15",Dynamic NAT configuration is missing the `overload` keyword on `ip nat inside source list 1 pool PUBLIC_POOL`.,Layer 3,NAT,High,"R1# configure terminal
+R1(config)# no ip nat inside source list 1 pool PUBLIC_POOL
+R1(config)# ip nat inside source list 1 pool PUBLIC_POOL overload
+R1(config)# end
+R1# write memory"
+CASE_029,Wireless laptop fails to auto-connect to Access Point; scanning for SSIDs does not display 'Campus-WiFi'.,Access Point AP1 SSID: 'Campus-WiFi'. Client configured with SSID 'Campus_WiFi'.,"Wireless Laptop Config:
+Wireless Network Adapter:
+   SSID: Campus_WiFi
+   Status: Disconnected - Searching for SSID 'Campus_WiFi'...
+
+AP1 Controller Status:
+   SSID: Campus-WiFi
+   Broadcast SSID: Enabled
+   Authentication: WPA2-Personal",Wireless Client SSID configuration typo ('Campus_WiFi' vs actual SSID 'Campus-WiFi').,Layer 2,Wireless,Medium,"On Wireless Client Laptop:
+Navigate to Wireless Properties -> Connection
+Change SSID to: Campus-WiFi
+Click Connect"
+CASE_030,Wireless Client repeatedly prompts for network key; status shows 'Authentication Failed'.,Access Point AP1 configured with WPA2-PSK key 'NetSage2026!'. Laptop configured with 'netsage2026!'.,"Wireless Laptop Console Output:
+Connecting to SSID 'Corp-Secure'...
+Associating with Access Point (MAC: 0011.2233.4455)...
+WPA2 Handshake failed: 4-Way Handshake MIC failure (Key Mismatch).
+Status: Disconnected.",WPA2 Pre-Shared Key (PSK) passphrase mismatch on wireless client (case-sensitivity typo).,Layer 2,Wireless,High,"On Wireless Client Laptop:
+Navigate to Wireless Security Settings
+Authentication Type: WPA2-PSK
+Pre-Shared Key: NetSage2026!
+Click Reconnect"

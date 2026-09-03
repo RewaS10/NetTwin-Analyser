@@ -6,3 +6,4 @@ plotly
 streamlit-autorefresh
 pandas
 numpy
+pydantic>=2.0
