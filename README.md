@@ -10,7 +10,7 @@
 [![Cybersecurity](https://img.shields.io/badge/Cybersecurity-SOC%20Simulation-yellow.svg)](https://owasp.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](LICENSE)
 
----
+
 
 # Overview
 
@@ -36,7 +36,7 @@ Designed for:
 - infrastructure automation teams
 - security operations workflows
 
----
+
 
 # Dashboard Preview
 

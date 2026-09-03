@@ -324,7 +324,6 @@ def make_telemetry(m):
   {srow("Uptime","14d 6h 22m")}
 </div></div></body></html>"""
 
-
 def make_logs(logs):
     cfg = {
         "info":    ("#3b82f6","#0f2744","#93c5fd","INFO"),
