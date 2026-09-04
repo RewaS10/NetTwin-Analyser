@@ -10,7 +10,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import streamlit as st
 import streamlit.components.v1 as components
-
+from dashboard.components.troubleshooter import render_troubleshooter
+from dashboard.network_discovery_ui import render_network_discovery
 try:
     from streamlit_autorefresh import st_autorefresh
     st_autorefresh(interval=5000, key="dashboard_refresh")
@@ -453,3 +454,23 @@ with col_b2:
 
 st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
 components.html(make_alert(scenario), height=54)
+# ─────────────────────────────────────────────────────────────────────────────
+# AI NETWORK TROUBLESHOOTER
+# ─────────────────────────────────────────────────────────────────────────────
+
+st.markdown(
+    "<div style='height:16px'></div>",
+    unsafe_allow_html=True,
+)
+
+render_troubleshooter()
+# ─────────────────────────────────────────────────────────────────────────────
+# AUTOMATIC NETWORK DISCOVERY
+# ─────────────────────────────────────────────────────────────────────────────
+
+st.markdown(
+    "<div style='height:24px'></div>",
+    unsafe_allow_html=True,
+)
+
+render_network_discovery()

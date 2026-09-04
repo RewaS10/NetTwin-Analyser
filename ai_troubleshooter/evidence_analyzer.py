@@ -49,7 +49,7 @@ from ai_troubleshooter.models import (
     SwitchportInfo,
     TrunkInfo,
     VlanBriefEntry,
-) 
+)
 
 # ---------------------------------------------------------------------------
 # Helpers

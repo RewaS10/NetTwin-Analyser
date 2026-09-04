@@ -1,0 +1,16 @@
+hostname R1
+
+interface GigabitEthernet0/0
+ description Link to R2
+ ip address 10.0.12.1 255.255.255.252
+ no shutdown
+
+interface GigabitEthernet0/1
+ description LAN Network
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+
+router ospf 1
+ network 10.0.12.0 0.0.0.3 area 0
+
+ip route 0.0.0.0 0.0.0.0 10.0.12.2

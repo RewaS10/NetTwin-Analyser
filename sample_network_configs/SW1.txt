@@ -1,0 +1,26 @@
+hostname SW1
+
+vlan 10
+ name USERS
+
+vlan 20
+ name SERVERS
+
+interface GigabitEthernet0/1
+ description Uplink to R2
+ switchport mode trunk
+ no shutdown
+
+interface GigabitEthernet0/2
+ description User Access Port
+ switchport mode access
+ switchport access vlan 10
+ no shutdown
+
+interface GigabitEthernet0/3
+ description Server Access Port
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+
+spanning-tree mode rapid-pvst
